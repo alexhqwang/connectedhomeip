@@ -161,7 +161,7 @@ CHIP_ERROR SecureSession::Encrypt(const uint8_t * input, size_t input_length, ui
         usage = kI2RKey;
     }
 
-    ReturnErrorOnFailure(AES_CCM_encrypt(input, input_length, AAD, aadLen, mKeys[usage], kAES_CCM128_Key_Length, IV, sizeof(IV),
+    ReturnErrorOnFailure(AES_CCM_encrypt(input, input_length, AAD, aadLen, mKeys[usage], Crypto::kAES_CCM128_Key_Length, IV, sizeof(IV),
                                          output, tag, taglen));
 
     mac.SetTag(&header, encType, tag, taglen);
@@ -196,8 +196,20 @@ CHIP_ERROR SecureSession::Decrypt(const uint8_t * input, size_t input_length, ui
         usage = kR2IKey;
     }
 
-    return AES_CCM_decrypt(input, input_length, AAD, aadLen, tag, taglen, mKeys[usage], kAES_CCM128_Key_Length, IV, sizeof(IV),
+    return AES_CCM_decrypt(input, input_length, AAD, aadLen, tag, taglen, mKeys[usage], Crypto::kAES_CCM128_Key_Length, IV, sizeof(IV),
                            output);
+}
+
+CHIP_ERROR SecureSession::ExportAttestationChallenge(uint8_t * output, size_t output_length)
+{
+    CHIP_ERROR err = CHIP_NO_ERROR;
+
+    if (output_length < Crypto::kAES_CCM128_Key_Length)
+        err = CHIP_ERROR_BUFFER_TOO_SMALL;
+    else
+        memcpy(output, mKeys[kAttestationChallengeKey], Crypto::kAES_CCM128_Key_Length);
+
+    return err;
 }
 
 } // namespace chip

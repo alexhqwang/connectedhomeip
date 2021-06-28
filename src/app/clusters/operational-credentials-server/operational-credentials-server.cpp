@@ -376,6 +376,19 @@ bool emberAfOperationalCredentialsClusterOpCSRRequestCallback(chip::app::Command
 
     TLV::TLVWriter * writer = nullptr;
 
+    chip::Platform::ScopedMemoryBuffer<uint8_t> opCsrTbs;
+    constexpr size_t opCsrTbsLength = Crypto::kMAX_CSR_Length
+        + Crypto::kCSR_Nonce_Length + Crypto::kAES_CCM128_Key_Length;
+    TLV::TLVWriter opCsrElemWriter;
+    size_t opCsrElemLength = 0;
+
+    chip::Messaging::ExchangeContext * exchangeCtx = nullptr;
+    chip::Messaging::ExchangeManager * exchangeMgr = nullptr;
+    chip::SecureSessionMgr * secureSessionMgr = nullptr;
+    chip::Transport::PeerConnectionState * peerConnState = nullptr;
+
+    Crypto::P256ECDSASignature attestationSignature;
+
     // Fetch current admin
     AdminPairingInfo * admin = retrieveCurrentAdmin();
     VerifyOrExit(admin != nullptr, status = EMBER_ZCL_STATUS_FAILURE);
@@ -394,16 +407,60 @@ bool emberAfOperationalCredentialsClusterOpCSRRequestCallback(chip::app::Command
     VerifyOrExit(err == CHIP_NO_ERROR, status = EMBER_ZCL_STATUS_FAILURE);
     VerifyOrExit(csrLength < UINT8_MAX, status = EMBER_ZCL_STATUS_FAILURE);
 
-    VerifyOrExit(commandObj != nullptr, err = CHIP_ERROR_INCORRECT_STATE);
+    // Encode opcsr-elements structure
+    VerifyOrExit(opCsrTbs.Alloc(opCsrTbsLength), status = EMBER_ZCL_STATUS_FAILURE);
 
+    opCsrElemWriter.Init(opCsrTbs.Get(), opCsrTbsLength);
+
+    {
+        TLVType outerContainerType;
+
+        SuccessOrExit(err = opCsrElemWriter.StartContainer(TLV::AnonymousTag,
+            kTLVType_Structure, outerContainerType));
+
+        SuccessOrExit(err = opCsrElemWriter.Put(TLV::ContextTag(1), ByteSpan(csr.Get(), csrLength)));
+        SuccessOrExit(err = opCsrElemWriter.Put(TLV::ContextTag(2), CSRNonce));
+        SuccessOrExit(err = opCsrElemWriter.Put(TLV::ContextTag(3), ByteSpan(nullptr, 0)));
+        SuccessOrExit(err = opCsrElemWriter.Put(TLV::ContextTag(4), ByteSpan(nullptr, 0)));
+        SuccessOrExit(err = opCsrElemWriter.Put(TLV::ContextTag(5), ByteSpan(nullptr, 0)));
+
+        SuccessOrExit(err = opCsrElemWriter.EndContainer(outerContainerType));
+    }
+
+    opCsrElemWriter.Finalize();
+    opCsrElemLength = opCsrElemWriter.GetLengthWritten();
+
+    // Generate opcsr_tbs message
+    exchangeCtx = commandObj->GetExchangeContext();
+    VerifyOrExit(exchangeCtx != nullptr, err = CHIP_ERROR_INCORRECT_STATE);
+    exchangeMgr = exchangeCtx->GetExchangeMgr();
+    VerifyOrExit(exchangeMgr != nullptr, err = CHIP_ERROR_INCORRECT_STATE);
+    secureSessionMgr = exchangeMgr->GetSessionMgr();
+    VerifyOrExit(secureSessionMgr != nullptr, err = CHIP_ERROR_INCORRECT_STATE);
+    peerConnState = secureSessionMgr->GetPeerConnectionState(exchangeCtx->GetSecureSession());
+    VerifyOrExit(peerConnState != nullptr, err = CHIP_ERROR_INCORRECT_STATE);
+
+    VerifyOrExit(opCsrElemLength + Crypto::kAES_CCM128_Key_Length < opCsrTbsLength,
+        err = CHIP_ERROR_INCORRECT_STATE);
+    peerConnState->GetSecureSession().ExportAttestationChallenge(opCsrTbs.Get() + opCsrElemLength,
+        Crypto::kAES_CCM128_Key_Length);
+
+    // Compute the attestation_signature
+    // TODO: Use Device Attestation key instead of Operational key.
+    err = admin->GetOperationalKey()->ECDSA_sign_msg(
+        opCsrTbs.Get(), opCsrTbsLength, attestationSignature);
+    VerifyOrExit(err == CHIP_NO_ERROR, status = EMBER_ZCL_STATUS_FAILURE);
+
+    // Populate fields of the CSRResponse Command
+    VerifyOrExit(commandObj != nullptr, err = CHIP_ERROR_INCORRECT_STATE);
     SuccessOrExit(err = commandObj->PrepareCommand(cmdParams));
+
     writer = commandObj->GetCommandDataElementTLVWriter();
-    SuccessOrExit(err = writer->Put(TLV::ContextTag(0), ByteSpan(csr.Get(), csrLength)));
-    SuccessOrExit(err = writer->Put(TLV::ContextTag(1), CSRNonce));
-    SuccessOrExit(err = writer->Put(TLV::ContextTag(2), ByteSpan(nullptr, 0)));
-    SuccessOrExit(err = writer->Put(TLV::ContextTag(3), ByteSpan(nullptr, 0)));
-    SuccessOrExit(err = writer->Put(TLV::ContextTag(4), ByteSpan(nullptr, 0)));
-    SuccessOrExit(err = writer->Put(TLV::ContextTag(5), ByteSpan(nullptr, 0)));
+    SuccessOrExit(err = writer->Put(TLV::ContextTag(0),
+        ByteSpan(opCsrTbs.Get(), opCsrElemLength)));
+    SuccessOrExit(err = writer->Put(TLV::ContextTag(1),
+        ByteSpan(attestationSignature, attestationSignature.Length())));
+
     SuccessOrExit(err = commandObj->FinishCommand());
 
 exit:

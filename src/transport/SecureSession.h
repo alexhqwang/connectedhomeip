@@ -127,10 +127,19 @@ public:
      */
     void Reset();
 
-private:
-    static constexpr size_t kAES_CCM128_Key_Length = 16;
+    /**
+     * @brief
+     *   Export the Attestation Challenge Key for computing OpCSR Information
+     *
+     * @param output Output buffer for Attestation Challenge
+     * @param output_length Length of the output buffer
+     *
+     * @return CHIP_ERROR The export result
+     */
+    CHIP_ERROR ExportAttestationChallenge(uint8_t * output, size_t output_length);
 
-    typedef uint8_t CryptoKey[kAES_CCM128_Key_Length];
+private:
+    typedef uint8_t CryptoKey[Crypto::kAES_CCM128_Key_Length];
 
     enum KeyUsage
     {

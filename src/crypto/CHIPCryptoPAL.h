@@ -53,12 +53,15 @@ constexpr size_t kMAX_FE_Length              = kP256_FE_Length;
 constexpr size_t kMAX_Point_Length           = kP256_Point_Length;
 constexpr size_t kMAX_Hash_Length            = kSHA256_Hash_Length;
 constexpr size_t kMAX_CSR_Length             = 512;
+constexpr size_t kCSR_Nonce_Length           = 32;
 
 constexpr size_t kMin_Salt_Length = 8;
 constexpr size_t kMax_Salt_Length = 16;
 
 constexpr size_t kP256_PrivateKey_Length = 32;
 constexpr size_t kP256_PublicKey_Length  = 65;
+
+constexpr size_t kAES_CCM128_Key_Length = 16;
 
 /* These sizes are hardcoded here to remove header dependency on underlying crypto library
  * in a public interface file. The validity of these sizes is verified by static_assert in
