@@ -41,7 +41,7 @@ void SerializableU64SetBase::SwapByteOrderIfNeeded()
      *  different machine architectures to interpret a given set in a consistent manner,
      *  for serialize and deserialize operations.
      */
-    if (nl::ByteOrder::GetCurrent() != nl::ByteOrder::LittleEndian)
+    if (ByteOrder::GetCurrent() != ByteOrder::LittleEndian)
     {
         for (uint16_t i = 0; i < mNextAvailable; i++)
         {

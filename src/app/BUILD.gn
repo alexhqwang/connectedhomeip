@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import("//build_overrides/chip.gni")
-import("//build_overrides/nlio.gni")
 
 import("${chip_root}/build/chip/buildconfig_header.gni")
 import("common_flags.gni")
@@ -192,7 +191,6 @@ static_library("app") {
     "${chip_root}/src/messaging",
     "${chip_root}/src/protocols/secure_channel",
     "${chip_root}/src/system",
-    "${nlio_root}:nlio",
   ]
 
   cflags = [ "-Wconversion" ]

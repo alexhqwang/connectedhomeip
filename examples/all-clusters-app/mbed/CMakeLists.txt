@@ -7,7 +7,6 @@ get_filename_component(CHIP_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../.. REALPATH)
 get_filename_component(MBED_COMMON ${CHIP_ROOT}/examples/platform/mbed REALPATH)
 get_filename_component(GEN_DIR ${CHIP_ROOT}/zzz_generated/ REALPATH)
 get_filename_component(ALL_CLUSTERS_COMMON ${CHIP_ROOT}/examples/all-clusters-app/all-clusters-common REALPATH)
-get_filename_component(NLIO_ROOT ${CHIP_ROOT}/third_party/nlio/repo/include REALPATH)
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/config.in
@@ -51,7 +50,6 @@ target_include_directories(${APP_TARGET} PRIVATE
                            ${ALL_CLUSTERS_COMMON}/include
                            ${GEN_DIR}/app-common
                            ${GEN_DIR}/all-clusters-app
-                           ${NLIO_ROOT}
 )
 
 target_sources(${APP_TARGET} PRIVATE

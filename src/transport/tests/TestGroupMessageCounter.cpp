@@ -27,7 +27,6 @@
 #include <transport/GroupPeerMessageCounter.h>
 #include <transport/PeerMessageCounter.h>
 
-#include <nlbyteorder.h>
 #include <nlunit-test.h>
 
 #include <errno.h>

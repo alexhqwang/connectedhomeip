@@ -40,7 +40,6 @@
 #include <transport/TransportMgr.h>
 #include <transport/tests/LoopbackTransportManager.h>
 
-#include <nlbyteorder.h>
 #include <nlunit-test.h>
 
 #include <errno.h>

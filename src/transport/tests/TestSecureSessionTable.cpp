@@ -28,7 +28,6 @@
 #include <transport/SecureSessionTable.h>
 #include <transport/SessionHolder.h>
 
-#include <nlbyteorder.h>
 #include <nlunit-test.h>
 
 #include <errno.h>

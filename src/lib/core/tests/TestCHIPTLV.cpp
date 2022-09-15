@@ -23,7 +23,6 @@
  *
  */
 
-#include <nlbyteorder.h>
 #include <nlunit-test.h>
 
 #include <lib/core/CHIPCircularTLVBuffer.h>

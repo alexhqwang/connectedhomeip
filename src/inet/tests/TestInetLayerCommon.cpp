@@ -31,10 +31,9 @@
 #include <string.h>
 #include <utility>
 
-#include <nlbyteorder.hpp>
-
 #include <inet/IPPacketInfo.h>
 #include <lib/support/CodeUtils.h>
+#include <lib/support/io/byteorder.hpp>
 
 #include "TestInetCommon.h"
 
@@ -198,7 +197,7 @@ static PacketBufferHandle MakeICMPDataBuffer(uint16_t aDesiredUserLength, uint16
         lHeader->mCode           = 0;
         lHeader->mChecksum       = 0;
         lHeader->mID             = static_cast<uint16_t>(rand() & UINT16_MAX);
-        lHeader->mSequenceNumber = nlByteOrderSwap16HostToBig(lSequenceNumber++);
+        lHeader->mSequenceNumber = ByteOrder::Swap16HostToBig(lSequenceNumber++);
     }
 
     return (lBuffer);

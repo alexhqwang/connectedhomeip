@@ -271,7 +271,6 @@ target_include_directories(${COMPONENT_LIB} INTERFACE
     "${CHIP_ROOT}/zzz_generated/app-common"
     "${CHIP_ROOT}/examples/platform/esp32"
     "${CHIP_ROOT}/third_party/nlassert/repo/include"
-    "${CHIP_ROOT}/third_party/nlio/repo/include"
     "${CMAKE_CURRENT_BINARY_DIR}/src/include"
     "${CMAKE_CURRENT_BINARY_DIR}/include"
     "${CMAKE_CURRENT_BINARY_DIR}/gen/include"

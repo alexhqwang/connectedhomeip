@@ -1,6 +1,6 @@
 /*
  *
- *    Copyright (c) 2020 Project CHIP Authors
+ *    Copyright (c) 2020-2022 Project CHIP Authors
  *    Copyright (c) 2013-2017 Nest Labs, Inc.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,16 +33,14 @@
 
 #pragma once
 
-// The nlio headers use [inout] instead of [in,out], which makes the clang
+// The io headers use [inout] instead of [in,out], which makes the clang
 // documentation warning unhappy.  Suppress it for those headers.
 #pragma GCC diagnostic push
 #ifdef __clang__
 #pragma GCC diagnostic ignored "-Wdocumentation"
 #endif // __clang__
 
-#include <nlbyteorder.hpp>
-#include <nlio-byteorder.hpp>
-#include <nlio.hpp>
+#include <lib/support/io/io.hpp>
 
 #pragma GCC diagnostic pop
 
@@ -77,7 +75,7 @@ namespace Encoding {
  */
 inline uint16_t Swap16(uint16_t v)
 {
-    return nl::ByteOrder::Swap16(v);
+    return ByteOrder::Swap16(v);
 }
 
 /**
@@ -90,7 +88,7 @@ inline uint16_t Swap16(uint16_t v)
  */
 inline uint32_t Swap32(uint32_t v)
 {
-    return nl::ByteOrder::Swap32(v);
+    return ByteOrder::Swap32(v);
 }
 
 /**
@@ -103,7 +101,7 @@ inline uint32_t Swap32(uint32_t v)
  */
 inline uint64_t Swap64(uint64_t v)
 {
-    return nl::ByteOrder::Swap64(v);
+    return ByteOrder::Swap64(v);
 }
 
 /**
@@ -117,7 +115,7 @@ inline uint64_t Swap64(uint64_t v)
  */
 inline uint8_t Get8(const uint8_t * p)
 {
-    return nl::IO::Get8(p);
+    return IO::Get8(p);
 }
 
 /**
@@ -132,7 +130,7 @@ inline uint8_t Get8(const uint8_t * p)
  */
 inline void Put8(uint8_t * p, uint8_t v)
 {
-    nl::IO::Put8(p, v);
+    IO::Put8(p, v);
 }
 
 /**
@@ -148,7 +146,7 @@ inline void Put8(uint8_t * p, uint8_t v)
  */
 inline uint8_t Read8(const uint8_t *& p)
 {
-    return nl::IO::Read8(reinterpret_cast<const void *&>(p));
+    return IO::Read8(reinterpret_cast<const void *&>(p));
 }
 
 /**
@@ -231,7 +229,7 @@ inline T HostSwap(T v);
  */
 inline uint16_t HostSwap16(uint16_t v)
 {
-    return nl::ByteOrder::Swap16LittleToHost(v);
+    return ByteOrder::Swap16LittleToHost(v);
 }
 
 template <>
@@ -255,7 +253,7 @@ inline uint16_t HostSwap<uint16_t>(uint16_t v)
  */
 inline uint32_t HostSwap32(uint32_t v)
 {
-    return nl::ByteOrder::Swap32LittleToHost(v);
+    return ByteOrder::Swap32LittleToHost(v);
 }
 
 template <>
@@ -279,7 +277,7 @@ inline uint32_t HostSwap<uint32_t>(uint32_t v)
  */
 inline uint64_t HostSwap64(uint64_t v)
 {
-    return nl::ByteOrder::Swap64LittleToHost(v);
+    return ByteOrder::Swap64LittleToHost(v);
 }
 
 template <>
@@ -302,7 +300,7 @@ inline uint64_t HostSwap<uint64_t>(uint64_t v)
  */
 inline uint16_t Get16(const uint8_t * p)
 {
-    return nl::IO::LittleEndian::GetUnaligned16(p);
+    return IO::LittleEndian::GetUnaligned16(p);
 }
 
 /**
@@ -319,7 +317,7 @@ inline uint16_t Get16(const uint8_t * p)
  */
 inline uint32_t Get32(const uint8_t * p)
 {
-    return nl::IO::LittleEndian::GetUnaligned32(p);
+    return IO::LittleEndian::GetUnaligned32(p);
 }
 
 /**
@@ -336,7 +334,7 @@ inline uint32_t Get32(const uint8_t * p)
  */
 inline uint64_t Get64(const uint8_t * p)
 {
-    return nl::IO::LittleEndian::GetUnaligned64(p);
+    return IO::LittleEndian::GetUnaligned64(p);
 }
 
 /**
@@ -354,7 +352,7 @@ inline uint64_t Get64(const uint8_t * p)
  */
 inline void Put16(uint8_t * p, uint16_t v)
 {
-    nl::IO::LittleEndian::PutUnaligned16(p, v);
+    IO::LittleEndian::PutUnaligned16(p, v);
 }
 
 /**
@@ -372,7 +370,7 @@ inline void Put16(uint8_t * p, uint16_t v)
  */
 inline void Put32(uint8_t * p, uint32_t v)
 {
-    nl::IO::LittleEndian::PutUnaligned32(p, v);
+    IO::LittleEndian::PutUnaligned32(p, v);
 }
 
 /**
@@ -390,7 +388,7 @@ inline void Put32(uint8_t * p, uint32_t v)
  */
 inline void Put64(uint8_t * p, uint64_t v)
 {
-    nl::IO::LittleEndian::PutUnaligned64(p, v);
+    IO::LittleEndian::PutUnaligned64(p, v);
 }
 
 /**
@@ -410,7 +408,7 @@ inline void Put64(uint8_t * p, uint64_t v)
  */
 inline uint16_t Read16(const uint8_t *& p)
 {
-    return nl::IO::LittleEndian::ReadUnaligned16(reinterpret_cast<const void *&>(p));
+    return IO::LittleEndian::ReadUnaligned16(reinterpret_cast<const void *&>(p));
 }
 
 /**
@@ -450,7 +448,7 @@ inline uint16_t Read16(uint8_t *& p)
  */
 inline uint32_t Read32(const uint8_t *& p)
 {
-    return nl::IO::LittleEndian::ReadUnaligned32(reinterpret_cast<const void *&>(p));
+    return IO::LittleEndian::ReadUnaligned32(reinterpret_cast<const void *&>(p));
 }
 
 /**
@@ -490,7 +488,7 @@ inline uint32_t Read32(uint8_t *& p)
  */
 inline uint64_t Read64(const uint8_t *& p)
 {
-    return nl::IO::LittleEndian::ReadUnaligned64(reinterpret_cast<const void *&>(p));
+    return IO::LittleEndian::ReadUnaligned64(reinterpret_cast<const void *&>(p));
 }
 
 /**
@@ -619,7 +617,7 @@ namespace BigEndian {
  */
 inline uint16_t HostSwap16(uint16_t v)
 {
-    return nl::ByteOrder::Swap16BigToHost(v);
+    return ByteOrder::Swap16BigToHost(v);
 }
 
 /**
@@ -637,7 +635,7 @@ inline uint16_t HostSwap16(uint16_t v)
  */
 inline uint32_t HostSwap32(uint32_t v)
 {
-    return nl::ByteOrder::Swap32BigToHost(v);
+    return ByteOrder::Swap32BigToHost(v);
 }
 
 /**
@@ -655,7 +653,7 @@ inline uint32_t HostSwap32(uint32_t v)
  */
 inline uint64_t HostSwap64(uint64_t v)
 {
-    return nl::ByteOrder::Swap64BigToHost(v);
+    return ByteOrder::Swap64BigToHost(v);
 }
 
 /**
@@ -672,7 +670,7 @@ inline uint64_t HostSwap64(uint64_t v)
  */
 inline uint16_t Get16(const uint8_t * p)
 {
-    return nl::IO::BigEndian::GetUnaligned16(p);
+    return IO::BigEndian::GetUnaligned16(p);
 }
 
 /**
@@ -689,7 +687,7 @@ inline uint16_t Get16(const uint8_t * p)
  */
 inline uint32_t Get32(const uint8_t * p)
 {
-    return nl::IO::BigEndian::GetUnaligned32(p);
+    return IO::BigEndian::GetUnaligned32(p);
 }
 
 /**
@@ -706,7 +704,7 @@ inline uint32_t Get32(const uint8_t * p)
  */
 inline uint64_t Get64(const uint8_t * p)
 {
-    return nl::IO::BigEndian::GetUnaligned64(p);
+    return IO::BigEndian::GetUnaligned64(p);
 }
 
 /**
@@ -725,7 +723,7 @@ inline uint64_t Get64(const uint8_t * p)
  */
 inline void Put16(uint8_t * p, uint16_t v)
 {
-    nl::IO::BigEndian::PutUnaligned16(p, v);
+    IO::BigEndian::PutUnaligned16(p, v);
 }
 
 /**
@@ -744,7 +742,7 @@ inline void Put16(uint8_t * p, uint16_t v)
  */
 inline void Put32(uint8_t * p, uint32_t v)
 {
-    nl::IO::BigEndian::PutUnaligned32(p, v);
+    IO::BigEndian::PutUnaligned32(p, v);
 }
 
 /**
@@ -763,7 +761,7 @@ inline void Put32(uint8_t * p, uint32_t v)
  */
 inline void Put64(uint8_t * p, uint64_t v)
 {
-    nl::IO::BigEndian::PutUnaligned64(p, v);
+    IO::BigEndian::PutUnaligned64(p, v);
 }
 
 /**
@@ -783,7 +781,7 @@ inline void Put64(uint8_t * p, uint64_t v)
  */
 inline uint16_t Read16(const uint8_t *& p)
 {
-    return nl::IO::BigEndian::ReadUnaligned16(reinterpret_cast<const void *&>(p));
+    return IO::BigEndian::ReadUnaligned16(reinterpret_cast<const void *&>(p));
 }
 
 /**
@@ -823,7 +821,7 @@ inline uint16_t Read16(uint8_t *& p)
  */
 inline uint32_t Read32(const uint8_t *& p)
 {
-    return nl::IO::BigEndian::ReadUnaligned32(reinterpret_cast<const void *&>(p));
+    return IO::BigEndian::ReadUnaligned32(reinterpret_cast<const void *&>(p));
 }
 
 /**
@@ -863,7 +861,7 @@ inline uint32_t Read32(uint8_t *& p)
  */
 inline uint64_t Read64(const uint8_t *& p)
 {
-    return nl::IO::BigEndian::ReadUnaligned64(reinterpret_cast<const void *&>(p));
+    return IO::BigEndian::ReadUnaligned64(reinterpret_cast<const void *&>(p));
 }
 
 /**

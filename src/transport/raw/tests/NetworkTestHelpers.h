@@ -17,6 +17,7 @@
 #pragma once
 
 #include <functional>
+#include <queue>
 
 #include <inet/TCPEndPoint.h>
 #include <inet/UDPEndPoint.h>
@@ -26,9 +27,6 @@
 #include <system/SystemPacketBuffer.h>
 #include <transport/raw/Base.h>
 #include <transport/raw/PeerAddress.h>
-
-#include <nlbyteorder.h>
-#include <queue>
 
 namespace chip {
 namespace Test {

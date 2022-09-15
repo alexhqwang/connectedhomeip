@@ -309,7 +309,6 @@ target_include_directories(chip INTERFACE
     ${CHIP_ROOT}/src/include
     ${CHIP_ROOT}/src/lib
     ${CHIP_ROOT}/third_party/nlassert/repo/include
-    ${CHIP_ROOT}/third_party/nlio/repo/include
     ${CHIP_ROOT}/zzz_generated/app-common
     ${CMAKE_CURRENT_BINARY_DIR}/gen/include
 )

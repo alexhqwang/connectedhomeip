@@ -26,7 +26,6 @@
 #include <transport/PeerMessageCounter.h>
 
 #include <errno.h>
-#include <nlbyteorder.h>
 #include <nlunit-test.h>
 #include <vector>
 

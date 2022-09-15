@@ -24,7 +24,6 @@
 
 #include "TestHelpers.h"
 
-#include <nlbyteorder.h>
 #include <nlunit-test.h>
 
 #include <lib/support/Span.h>

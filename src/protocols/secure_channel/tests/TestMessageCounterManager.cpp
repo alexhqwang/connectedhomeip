@@ -35,7 +35,6 @@
 #include <transport/SessionManager.h>
 #include <transport/TransportMgr.h>
 
-#include <nlbyteorder.h>
 #include <nlunit-test.h>
 
 #include <errno.h>
